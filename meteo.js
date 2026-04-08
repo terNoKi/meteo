@@ -8,16 +8,27 @@ const ico = document.getElementById("weather_ico");
 const joke = document.getElementById("joke");
 
 async function getWeather() {
-    let city_input = input.value;
-    let city_data = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city_input}&appid=${apiKey}&units=metric&lang=pl`);
-    let city_output = await city_data.json();
-    city.textContent = city_output.name;
-    temp.textContent =  `Temperatura: ${city_output.main.temp}`;
-    desc.textContent = city_output.weather.map(zjawisko => zjawisko.description).join(", ");
-    ico.src = `https://openweathermap.org/img/wn/${city_output.weather[0].icon}@2x.png`;
-    console.log(city_output);
-    console.log(`miasto: ${city_output.name}, pogoda: ${city_output.weather.map(zjawisko => zjawisko.description).join(", ")}, temperatura: ${city_output.main.temp}, odczuwalna: ${city_output.main.feels_like}`)
-
+    try{
+        let city_input = input.value;
+        let city_data = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city_input}&appid=${apiKey}&units=metric&lang=pl`);
+        if(!city_data.ok){
+            throw new Error("Nie znaleziono miasta");
+        }
+        let city_output = await city_data.json();
+        city.textContent = city_output.name;
+        temp.textContent =  `Temperatura: ${city_output.main.temp} ℃`;
+        desc.textContent = city_output.weather.map(zjawisko => zjawisko.description).join(", ");
+        ico.src = `https://openweathermap.org/img/wn/${city_output.weather[0].icon}@2x.png`;
+        console.log(city_output);
+        console.log(`miasto: ${city_output.name}, pogoda: ${city_output.weather.map(zjawisko => zjawisko.description).join(", ")}, temperatura: ${city_output.main.temp}, odczuwalna: ${city_output.main.feels_like}`);
+    }catch (error){
+        city.classList.add("error")
+        city.textContent = "Nie znaleziono miasta";
+        temp.textContent = "";
+        desc.textContent = "";
+        ico.src = "";
+        console.log(`Error: ${input.value} is not a city!`);
+    }
 }
 
 async function getJoke(){
@@ -42,3 +53,4 @@ input.addEventListener('keypress', function (event){
   }
 })
 
+getJoke();
