@@ -20,13 +20,6 @@ async function getWeather() {
 
 }
 
-button.addEventListener('click', getWeather)
-input.addEventListener('keypress', function (event){
-  if(event.key == "Enter"){
-    getWeather();
-  }
-})
-
 async function getJoke(){
     let response = await fetch('https://v2.jokeapi.dev/joke/Any?type=single');
     let data = await response.json();
@@ -38,11 +31,14 @@ async function getJoke(){
         joke.textContent = data.joke;
     }};
 
-
-button.addEventListener('click', getJoke)
+button.addEventListener('click', function(){
+    getJoke();
+    getWeather();
+})
 input.addEventListener('keypress', function (event){
   if(event.key == "Enter"){
     getJoke();
+    getWeather();
   }
 })
 
